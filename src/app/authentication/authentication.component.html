@@ -1,0 +1,27 @@
+
+<div class="container mt-5 border rounded p-4 shadow-sm d-flex flex-column justify-content-center bg-dark authentication-container" style="max-width: 50%;">
+  <h2 class="text-center mb-4 authentication-title" i18n="@@signIn" style="color: #d1c1c1;">Sign In to continue</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="max-width: 300px; margin: 0 auto;">
+    <div class="form-group">
+      <label i18n="@@email" for="email" class="form-label" style="font-weight: bold;">Email</label>
+      <input type="email" id="email" formControlName="email" class="form-control">
+      <small *ngIf="!loginForm.get('email')?.valid && loginForm.get('email')?.touched" class="text-danger" i18n="@@validEmail">Please enter a valid email</small>
+      <small *ngIf="loginForm.get('email')?.hasError('userDoesntExist') && loginForm.get('email')?.touched" class="text-danger" i18n="@@userNotReg">Email not registered</small>
+    </div>
+
+    <div class="form-group">
+      <label i18n="@@password" for="password" class="form-label" style="font-weight: bold;">Password</label>
+      <input type="password" id="password" formControlName="password" class="form-control">
+      <small *ngIf="!loginForm.get('password')?.valid && loginForm.get('password')?.touched" class="text-danger">
+        <small *ngIf="loginForm.get('password')?.hasError('required')" i18n="@@required">This field is required</small>
+        <small *ngIf="loginForm.get('password')?.hasError('minlength')" i18n="@@atLeast6">Password should be at least 6 characters long</small>
+      </small>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <button class="btn  p-2 m-5" type="submit" i18n style="width: 40%; background-color: #d1c1c1; color: #000;">Log In</button>
+    </div>
+  </form>
+</div>
+

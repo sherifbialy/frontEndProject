@@ -1,0 +1,30 @@
+.container {
+    max-width: 960px;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .movie-details {
+    padding-left: 20px; 
+  }
+  
+  .rating {
+    margin-bottom: 10px;
+  }
+  
+  .loading-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
