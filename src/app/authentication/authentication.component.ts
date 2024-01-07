@@ -1,9 +1,10 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from '../shared/authentication.service';
+import { AuthResponseData, AuthenticationService } from '../shared/authentication.service';
 import { User } from './user.model';
 import { Route, Router } from '@angular/router';
-import { CsvService } from '../shared/csv.service';
+
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-authentication',
@@ -15,43 +16,75 @@ export class AuthenticationComponent implements OnInit{
   loginForm!:FormGroup;
   email!:string;
   password!:string;
-  //this.userNotExists.bind(this)
+  isLoading=false;
+  error:string|null=null;
+  isSignUpMode=false;
+ 
   ngOnInit(): void {
     
-    //this.renderer.setStyle(document.body, 'background-image', 'url("assets/cinema.jpg")');
+   this.initForm();
+    
+  }
+  
+  initForm(){
     this.loginForm=new FormGroup({
-        'email':new FormControl(null,[Validators.required,Validators.email,this.userNotExists.bind(this)]),
-        'password': new FormControl(null,[Validators.required,Validators.minLength(6)]),
-       
-    });
+      'email':new FormControl(null,[Validators.required,Validators.email]),
+      'password': new FormControl(null,[Validators.required,Validators.minLength(6)]),
+              });
     this.loginForm.valueChanges.subscribe((value)=>{
-      console.log(value)
+      //console.log(value)
       this.email=value.email;
       this.password=value.password;
-     });
+      console.log(this.error)
+              });
     this.loginForm.statusChanges.subscribe((value)=>{
-      console.log(value)
-       });
+      //console.log(value)
+              });
   }
-  constructor(private authService:AuthenticationService, private router:Router,private _csvService: CsvService){
+
+  onSwitchMode(){
+    this.isSignUpMode=!this.isSignUpMode;
+  }
+
+
+  constructor(private authService:AuthenticationService, private router:Router){
 
   }
-  userNotExists(control: FormControl):{[s:string]:boolean}|null{
-    console.log(control)
-    const userExists = this.authService.registeredUsers.some((element: User) => {
-      
-      return element.email === control.value;
-    });
-  
-    return userExists ? null: {userExists:true};
-  }
-    
+
+
+ 
 
   
   onSubmit(){
-    let user:User={email:this.email,password:this.password}
-    this.authService.login(user);
-    this.router.navigate([''])
+    if(!this.loginForm.valid){
+      return;
+    }
+    let authObs=new Observable<AuthResponseData>();
+    this.isLoading=true;
+    if(this.isSignUpMode){
+      
+      authObs=this.authService.signUp(this.email,this.password)
+    }
+    else{
+      
+      authObs=this.authService.login(this.email,this.password)
+      
+
+    }
+    authObs.subscribe({
+      next:(res)=>{
+         console.log(res)
+         this.isLoading=false;
+         this.router.navigate(['/']);
+      },
+      error:(error)=>{
+        this.isLoading=false;
+        this.error=error
+        
+        console.log(this.error)
+      }
+    })
+   this.loginForm.reset()
 
   }
   

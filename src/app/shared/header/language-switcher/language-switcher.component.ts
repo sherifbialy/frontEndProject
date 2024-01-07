@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { LocaleService } from '../../shared/locale.service';
+import { LocaleService } from '../../locale.service';
 
 @Component({
   selector: 'app-language-switcher',

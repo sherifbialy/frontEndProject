@@ -1,16 +1,16 @@
 
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex">
     <a class="navbar-brand mx-5 pb-2">
         <img src="https://th.bing.com/th/id/R.4c018b8a0a3dc9e22bec0d23b9efd065?rik=pxUqC5salycCww&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_119078.png&ehk=ZyW9NoBjecUQPpb%2fBsT3rHVfWKQDVPT1CL1PlAv%2fFM0%3d&risl=&pid=ImgRaw&r=0" 
         class="img-fluid rounded w-30" style="max-height: 30px;"
         >
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+    <button class="navbar-toggler" (click)="isCollapsed=!isCollapsed" [attr.aria-expanded]="!isCollapsed" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse ms-5" id="navbarNav">
+    <div class="collapse navbar-collapse ms-5" [ngbCollapse]="isCollapsed" id="navbarNav">
       <ul class="navbar-nav ml-auto">
         
         <li class="nav-item me-3">
@@ -19,14 +19,17 @@
         <li class="nav-item me-3">
           <a class="nav-link" [routerLink]="['/']" i18n>Catalog</a>
         </li>
+      </ul>
+      <ul class="navbar-nav ml-auto navbar-right">
+        <li class="nav-item mx-3 float-right" *ngIf="loggedIn">
+            <a class="nav-link"  (click)="onSignOut()" i18n>Sign Out</a>
+          </li>
         
       </ul>
     </div>
     <div class="float-right">
         <app-language-switcher></app-language-switcher>
     </div>
-    <div class="float-right mx-5">
-    <button *ngIf="loggedIn" (click)="onSignOut()" style="cursor: pointer;" type="button" class="btn btn-danger" i18n>Sign out</button>
-</div>
+   
   </nav>
   

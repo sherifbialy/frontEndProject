@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 
 import { CatalogComponent } from './catalog.component';
-import { CatalogAPIService } from './catalog-api.service';
+import { CatalogAPIService } from '../catalog-api.service';
 import { Movie } from './movie.model';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 const mockMovies: Movie[] = [
   {

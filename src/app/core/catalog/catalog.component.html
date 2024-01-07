@@ -17,11 +17,11 @@
       </nav>
   
     <div class="row" *ngIf="!isLoading">
-      <div class="col-12 col-md-6 mb-4" *ngFor="let movie of movies; let i = index" [routerLink]="['/movie', i]">
+      <div class="col-12 col-md-6 mb-4" *ngFor="let movie of movies; let i = index" [routerLink]="['/catalog', i]">
         <div class="list-group  m-2">
           <a class="list-group-item border rounded p-4 shadow-sm" style="cursor: pointer;" >
             <div class="card">
-              <img src="https://image.tmdb.org/t/p/w342/{{ movie.poster_path }}" class="card-img-top img-fluid mb-3 rounded" alt="{{ movie.title }}">
+              <img src="{{posterURL}}{{ movie.poster_path }}" class="card-img-top img-fluid mb-3 rounded" alt="{{ movie.title }}">
               <div class="card-body">
                 <h5 class="card-title">{{ movie.title }}</h5>
                 <p class="card-text text-muted">{{ movie.release_date | date: 'yyyy' }}</p>
@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-center align-items-center position-absolute w-100 h-100 top-0 start-0 bg-white bg-opacity-75" *ngIf="isLoading && !error">
+    <div class="d-flex justify-content-center loading-overlay align-items-center position-absolute w-100 h-100 top-0 start-0 bg-white bg-opacity-75" *ngIf="isLoading && !error">
         <div class="spinner-border spinner-border-primary" role="status" aria-hidden="true"></div>
    
     <div *ngIf="isLoading && error">

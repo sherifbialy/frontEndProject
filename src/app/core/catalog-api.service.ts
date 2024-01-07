@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable, OnInit } from "@angular/core";
 import { Subject, map } from "rxjs";
-import { Movie } from "./movie.model";
-import { MovieResponse } from "./movie-response.model";
+import { Movie } from "./catalog/movie.model";
+import { MovieResponse } from "./catalog/movie-response.model";
 import { LocaleService } from "../shared/locale.service";
 import { environment } from '../../environments/environment';
 
