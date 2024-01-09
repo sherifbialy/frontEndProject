@@ -17,7 +17,7 @@
       </nav>
   
     <div class="row" *ngIf="!isLoading">
-      <div class="col-12 col-md-6 mb-4" *ngFor="let movie of movies; let i = index" [routerLink]="['/catalog', i]">
+      <div class="col-12 col-md-6 mb-4" *ngFor="let movie of movies; let i = index" [routerLink]="['/catalog', movie.id]">
         <div class="list-group  m-2">
           <a class="list-group-item border rounded p-4 shadow-sm" style="cursor: pointer;" >
             <div class="card">
@@ -33,6 +33,11 @@
     </div>
     <div class="d-flex justify-content-center loading-overlay align-items-center position-absolute w-100 h-100 top-0 start-0 bg-white bg-opacity-75" *ngIf="isLoading && !error">
         <div class="spinner-border spinner-border-primary" role="status" aria-hidden="true"></div>
+        </div>
+        <!-- <div class="d-flex justify-content-center align-items-center position-absolute w-100 h-100 top-0 start-0 bg-white bg-opacity-75">
+        <mat-spinner *ngIf="isLoading && !error" class="loading-overlay"></mat-spinner>
+      </div> -->
+
    
     <div *ngIf="isLoading && error">
       <h4>{{ error }}</h4>

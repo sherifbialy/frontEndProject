@@ -1,7 +1,8 @@
 export const environment = {
     production: true,
     apiBaseUrl: 'https://api.themoviedb.org/3/movie/top_rated',
-    apiKey: '9ca26d16a07033e0d79419b5e226f4f3',
+    apiKey: 'd88d2d996347aa687294d869d7e08f01',
+    detailBaseUrl: 'https://api.themoviedb.org/3/movie/',
     catalogTitle:"Top Rated Movies",
     moviePosterUrl:'https://image.tmdb.org/t/p/w342/',
     signUpUrl:'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=',

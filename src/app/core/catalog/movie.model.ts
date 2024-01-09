@@ -1,6 +1,7 @@
 export interface Movie{
     adult:boolean
-    backdrop_path:string
+    backdrop_path:string,
+    id:number
     original_language:string
     original_title:string
     overview:string

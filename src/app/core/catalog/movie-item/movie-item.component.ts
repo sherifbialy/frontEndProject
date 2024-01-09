@@ -14,21 +14,33 @@ export class MovieItemComponent implements OnInit {
   details!:Movie;
   isLoading=false;
   posterURL=environment.moviePosterUrl;
-
+  error:string|null=null
 
   constructor(private apiService:CatalogAPIService,private route:ActivatedRoute){
 
   }
   ngOnInit(): void {
-    this.subToParamsAndBuild()
+    this.sendRequestAndBuild()
     
   }
-
-  subToParamsAndBuild(){
+    
+  sendRequestAndBuild(){
     this.route.params.subscribe((data)=>{
       this.index=+data['id'];
-      this.details=this.apiService.getMovie(this.index);
-      
+      this.isLoading=true;
+      this.apiService.getOneMovie(this.index.toString()).subscribe(
+        {next:
+          (fetched)=>{
+            console.log(fetched)
+            this.isLoading=false;
+            this.details=fetched
+          },
+        error:(error)=>{
+          this.isLoading=false;
+          this.error=error
+        }}
+        );
+      console.log(this.details);
       this.isLoading=false;
     })
 

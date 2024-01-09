@@ -7,7 +7,7 @@ import { HeaderComponent } from "./header/header.component";
 import { ErrorPageComponent } from "./error-page/error-page.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { LanguageSwitcherComponent } from "./header/language-switcher/language-switcher.component";
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 
 const routes: Routes = [
 
@@ -26,7 +26,8 @@ const routes: Routes = [
       imports: [
         RouterModule.forChild(routes),
         CommonModule,
-        NgbModule
+        NgbModule,
+        MatProgressSpinnerModule
    
         
         
@@ -35,7 +36,8 @@ const routes: Routes = [
         RouterModule,
         HeaderComponent,
         ErrorPageComponent,
-        LanguageSwitcherComponent
+        LanguageSwitcherComponent,
+        MatProgressSpinnerModule
         
         
       ]

@@ -14,7 +14,7 @@ import { LocaleService } from '../../shared/locale.service';
 export class CatalogComponent implements OnInit, OnDestroy{
   movies!:Movie[]
   error!:null;
-  serviceSub!:Subscription;
+  //serviceSub!:Subscription;
   page!:number;
   catalogTitle=`${environment.catalogTitle=='Top Rated Movies'&&this.localeService.getInitialLocale()=='ar-AE'?'أفلام ذات تقييم عالي':environment.catalogTitle=='Popular Movies'&&this.localeService.getInitialLocale()=='ar-AE'?'الأفلام الشهيرة':environment.catalogTitle}`;
   isLoading:boolean=false;
@@ -23,15 +23,30 @@ export class CatalogComponent implements OnInit, OnDestroy{
     
   }
   ngOnDestroy(): void {
-   this.serviceSub.unsubscribe()
+   //this.serviceSub.unsubscribe()
   }
   ngOnInit(): void {
+  this.sendReqAndBuild();
+   this.subToPageNumber()
+   //this.subToMovieService()
+    
+  
+  }
+
+  sendReqAndBuild(){
     this.isLoading=true;
     
-    this.apiService.fetchPopularMovies();
-    
-   this.subToPageNumber()
-   this.subToMovieService()
+    this.apiService.fetchPopularMovies().subscribe({
+      next:(fetched)=>{
+          //this.moviesSubject.next(fetched);
+         this.movies=fetched;
+         this.isLoading=false;
+         
+      },error:(error)=>{
+            this.error=error.message;
+            this.isLoading=false;
+            
+      }});
     
   }
   subToPageNumber(){
@@ -40,35 +55,58 @@ export class CatalogComponent implements OnInit, OnDestroy{
     })
 
   }
-  subToMovieService(){
-    this.serviceSub=this.apiService.moviesSubject.subscribe(
-      { 
-       next:movies => {
-         this.isLoading=true;
-         this.movies = movies;
-         this.isLoading=false;
+  // subToMovieService(){
+  //   this.serviceSub=this.apiService.moviesSubject.subscribe(
+  //     { 
+  //      next:movies => {
+  //        this.isLoading=true;
+  //        this.movies = movies;
+  //        this.isLoading=false;
          
-       },
-     error:error=>{
-       this.error=error
-       console.log(this.error)
-       this.isLoading=false;
-       console.log(this.isLoading)
-     }});
-  }
+  //      },
+  //    error:error=>{
+  //      this.error=error
+  //      console.log(this.error)
+  //      this.isLoading=false;
+  //      console.log(this.isLoading)
+  //    }});
+  // }
 
 
   pageNumberPlus(){
     this.isLoading=true;
     this.apiService.flipPage()
-    this.isLoading=false;
+    this.apiService.fetchPopularMovies().subscribe({
+      next:(fetched)=>{
+          //this.moviesSubject.next(fetched);
+         this.movies=fetched;
+         this.isLoading=false;
+         
+      },error:(error)=>{
+            this.error=error.message;
+            this.isLoading=false;
+            
+      }});
+    
+  
 
     
   }
   pageNumberMinus(){
     this.isLoading=true;
     this.apiService.goBack();
-    this.isLoading=false;
+    this.apiService.fetchPopularMovies().subscribe({
+      next:(fetched)=>{
+          //this.moviesSubject.next(fetched);
+         this.movies=fetched;
+         this.isLoading=false;
+         
+      },error:(error)=>{
+            this.error=error.message;
+            this.isLoading=false;
+            
+      }});
+    
 
    
   }

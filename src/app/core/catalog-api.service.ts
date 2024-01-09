@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable, OnInit } from "@angular/core";
 import { Subject, map } from "rxjs";
 import { Movie } from "./catalog/movie.model";
@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment';
     providedIn:'root'
 })
 export class CatalogAPIService implements OnInit{
-    movies!:Movie[]
+    
     error=null
     pageNumber=1;
     dbUrl=`${environment.apiBaseUrl}?language=${this.localeService.getInitialLocale()=='ar-AE'?this.localeService.getInitialLocale().substring(0,2):this.localeService.getInitialLocale()}&page=${this.pageNumber.toString()}`
@@ -31,7 +31,7 @@ export class CatalogAPIService implements OnInit{
         this.pageNumber+=1;
         this.pageSubject.next(this.pageNumber)
         this.dbUrl=`${environment.apiBaseUrl}?language=${this.currentLocale=='ar-AE'?this.currentLocale.substring(0,2):this.currentLocale}&page=${this.pageNumber.toString()}`
-        this.fetchPopularMovies();
+        
       }
       goBack(){
         if(this.pageNumber>1){
@@ -45,7 +45,12 @@ export class CatalogAPIService implements OnInit{
       }
 
       ngOnInit(): void {
-        this.pageSubject.next(this.pageNumber)
+        this.pageSubject.next(this.pageNumber);
+        this.subToLocaleService();
+        
+        
+    }
+    subToLocaleService(){
         this.localeService.currentLocaleObservable.subscribe((locale) => {
             
             this.currentLocale = locale;
@@ -56,17 +61,13 @@ export class CatalogAPIService implements OnInit{
             
             console.log(this.dbUrl);
         });
-        
     }
 
     fetchPopularMovies(){
+        console.log(this.dbUrl)
         return this.http.get<MovieResponse>(this.dbUrl, {
-            headers: new HttpHeaders(
-                {
-                    accept: 'application/json',
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5Y2EyNmQxNmEwNzAzM2UwZDc5NDE5YjVlMjI2ZjRmMyIsInN1YiI6IjY1OTNmODBiMWNhYzhjNjNlYzBjODZhNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.w2icg8CpKVN0RKiokNTazAWRY5rIxwiuNuuZQ0SzYwY`
-
-            })
+        
+           params:new HttpParams().set('api_key',environment.apiKey)
                 
               }).pipe(map(
                     responseData=>{
@@ -77,18 +78,18 @@ export class CatalogAPIService implements OnInit{
                         return movieArray;
 
                     }
-              )).subscribe({
-                next:(fetched)=>{
-                    this.moviesSubject.next(fetched);
-                   this.movies=fetched;
-                   
-                },error:(error)=>{
-                      this.error=error.message;
-                      
-                }})
+              ))
     }
-    getMovie(index:number){
-        return this.movies[index];
+    // getMovie(index:number){
+    //     return this.movies[index];
+    // }
+    getOneMovie(id:string){
+        console.log(`${environment.detailBaseUrl}${id}`)
+        return this.http.get<Movie>(`${environment.detailBaseUrl}${id}`,{
+            
+            params:new HttpParams().set('api_key',environment.apiKey)
+        })
+    
     }
 
 
