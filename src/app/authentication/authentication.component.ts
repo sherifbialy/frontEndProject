@@ -1,10 +1,10 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthResponseData, AuthenticationService } from '../shared/authentication.service';
-import { User } from './user.model';
-import { Route, Router } from '@angular/router';
-
+import { AuthenticationService } from '../shared/authentication.service';
+import { Router } from '@angular/router';
+import { RECAPTCHA_V3_SITE_KEY, ReCaptchaV3Service } from 'ng-recaptcha';
 import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-authentication',
@@ -32,10 +32,10 @@ export class AuthenticationComponent implements OnInit{
       'password': new FormControl(null,[Validators.required,Validators.minLength(6)]),
               });
     this.loginForm.valueChanges.subscribe((value)=>{
-      //console.log(value)
+      console.log(value)
       this.email=value.email;
       this.password=value.password;
-      console.log(this.error)
+      
               });
     this.loginForm.statusChanges.subscribe((value)=>{
       //console.log(value)
@@ -47,27 +47,38 @@ export class AuthenticationComponent implements OnInit{
   }
 
 
-  constructor(private authService:AuthenticationService, private router:Router){
+  constructor(private authService:AuthenticationService, 
+              private router:Router,
+              private recaptchaV3Service: ReCaptchaV3Service,
+              private http:HttpClient){
 
   }
 
 
  
+  executeRecaptcha(){
+    
+    this.recaptchaV3Service.execute('authRequest')
+      .subscribe(
+        (token) => {
+          
 
+          this.handleToken(token);
+        });
+  }
   
-  onSubmit(){
-    if(!this.loginForm.valid){
-      return;
-    }
-    let authObs=new Observable<AuthResponseData>();
+  
+  handleToken(token: string): void {
+    let authObs=new Observable<{token:string}>();
     this.isLoading=true;
+    console.log(this.email);
     if(this.isSignUpMode){
       
-      authObs=this.authService.signUp(this.email,this.password)
+      authObs=this.authService.signUp(this.email,this.password,token)
     }
     else{
       
-      authObs=this.authService.login(this.email,this.password)
+      authObs=this.authService.login(this.email,this.password,token)
       
 
     }
@@ -84,8 +95,17 @@ export class AuthenticationComponent implements OnInit{
         console.log(this.error)
       }
     })
-   this.loginForm.reset()
+    this.loginForm.reset();
 
+  }
+  
+  onSubmit(){
+    if(!this.loginForm.valid){
+      return;
+    }
+    this.executeRecaptcha();
+    
+   
   }
   
 

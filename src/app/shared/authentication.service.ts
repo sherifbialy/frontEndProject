@@ -5,15 +5,18 @@ import { BehaviorSubject, Subject, catchError, tap, throwError } from "rxjs";
 import { Router } from "@angular/router";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { environment } from "../../environments/environment";
+import { JwtService } from "./jwt.service";
 
-export interface AuthResponseData{
-  idToken:string,
-  email:string
-  refreshToken:string
-  expiresIn:string
-  localId:string,
-  registered?:boolean
-}
+
+
+// export interface AuthResponseData{
+//   idToken:string,
+//   email:string
+//   refreshToken:string
+//   expiresIn:string
+//   localId:string,
+//   registered?:boolean
+// }
 
 @Injectable({
     providedIn:'root'
@@ -24,7 +27,7 @@ export class AuthenticationService implements OnInit{
     
    
     private expirationTimer:any;
-    constructor(private router:Router, private http:HttpClient){
+    constructor(private router:Router, private http:HttpClient,private jwtService:JwtService){
 
     }
     
@@ -32,40 +35,55 @@ export class AuthenticationService implements OnInit{
       
     }
     
-      signUp(email:string,password:string){
+      signUp(email:string,password:string,token:string){
        
        
-       return this.http.post<AuthResponseData>(`${environment.signUpUrl}${environment.fbApiKey}`,
+       return this.http.post<{token:string}>(`${environment.signUpUrl}`,
         {
           email:email,
           password:password,
           returnSecureToken:true
-        }).pipe(
+        },
+        {
+          headers:{
+            "recaptcha":token
+    
+        }
+      }).pipe(
           catchError(this.handleError),
           tap(resData => {
+            console.log(resData);
             this.handleAuthentication(
-              resData.email,
-              resData.localId,
-              resData.idToken,
-              +resData.expiresIn
+              email,
+
+              resData.token,
+              this.jwtService.getTokenExpiration(resData.token)!,
+              
             );
           })
         );
 
       }
-login(email:string,password:string){
-  return this.http.post<AuthResponseData>(`${environment.signInUrl}${environment.fbApiKey}`,
+login(email:string,password:string,token:string){
+  return this.http.post<{token:string}>(`${environment.signInUrl}`,
     {
       email:email,
       password:password,
-      returnSecureToken:true
-    }).pipe(catchError(this.handleError),
+      // returnSecureToken:true
+    },
+    {
+      headers:{
+        "recaptcha":token
+
+    }
+  }).pipe(catchError(this.handleError),
     tap(resData => {
+      console.log(this.jwtService.getTokenExpiration(resData.token));
       this.handleAuthentication(
-        resData.email,
-        resData.localId,
-        resData.idToken,
-        +resData.expiresIn
+        email,
+        
+        resData.token,
+        this.jwtService.getTokenExpiration(resData.token)!,
       );
     }))
 }
@@ -77,11 +95,11 @@ login(email:string,password:string){
         else{
           const userDataJSON:{
              email:string,
-        id:string,
+       
       _token:string,
       _tokenExpire:Date,
           }=JSON.parse(localStorage.getItem('userData')!);
-          let user=new User(userDataJSON.email,userDataJSON.id,userDataJSON._token,new Date(userDataJSON._tokenExpire))
+          let user=new User(userDataJSON.email,userDataJSON._token,new Date(userDataJSON._tokenExpire))
           if(user.token){
             this.user.next(user);
             const expirationDuration=new Date(userDataJSON._tokenExpire).getTime()-new Date().getTime()
@@ -108,20 +126,26 @@ login(email:string,password:string){
         }
         localStorage.removeItem('userData')
       }
+      
+      
+      
+      
       private handleAuthentication(
         email: string,
-        userId: string,
         token: string,
-        expiresIn: number
+        expiresIn: Date
       ) {
-        const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-        const user = new User(email, userId, token, expirationDate);
+        //const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+        const user = new User(email, token, expiresIn);
         this.user.next(user);
-        this.autoLogout(expiresIn*1000)
+        this.autoLogout(expiresIn.getTime()-new Date().getTime())
         localStorage.setItem('userData',JSON.stringify(user))
       }
     
+
+
       private handleError(errorRes: HttpErrorResponse) {
+        console.log(errorRes);
         let errorMessage = 'An unknown error occurred!';
         if (!errorRes.error || !errorRes.error.error) {
           console.log('error')

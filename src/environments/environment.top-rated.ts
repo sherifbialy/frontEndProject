@@ -1,12 +1,14 @@
 export const environment = {
     production: true,
-    apiBaseUrl: 'https://api.themoviedb.org/3/movie/top_rated',
-    apiKey: 'd88d2d996347aa687294d869d7e08f01',
-    detailBaseUrl: 'https://api.themoviedb.org/3/movie/',
+    apiBaseUrl: 'http://localhost:8081/api/movies',
+    detailBaseUrl: 'http://localhost:8081/api/movies/',
+    recaptcha: {
+        siteKey: '6LdSMWIpAAAAAII_Vj4mRySuKFTIfZh5RuXvDirT',
+    },
     catalogTitle:"Top Rated Movies",
-    moviePosterUrl:'https://image.tmdb.org/t/p/w342/',
-    signUpUrl:'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=',
-     signInUrl:'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=',
+    moviePosterUrl:'https://image.tmdb.org/t/p/w342',
+    signUpUrl:'http://localhost:8080/api/auth/register',
+     signInUrl:'http://localhost:8080/api/auth/login',
      fbApiKey:'AIzaSyBSFgSvfuVhC7XZPa5TwmkEtypslvzYjSM'
 
   };

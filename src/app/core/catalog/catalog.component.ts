@@ -38,8 +38,8 @@ export class CatalogComponent implements OnInit, OnDestroy{
     
     this.apiService.fetchPopularMovies().subscribe({
       next:(fetched)=>{
-          //this.moviesSubject.next(fetched);
          this.movies=fetched;
+         console.log(this.movies)
          this.isLoading=false;
          
       },error:(error)=>{

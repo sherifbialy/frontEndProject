@@ -1,8 +1,8 @@
-import { Movie } from "./movie.model";
+// import { Movie } from "./movie.model";
 
-export interface MovieResponse{
-    results:Movie[]
-    page:number,
-    total_pages:number,
-    total_results:number
-}
+// export interface MovieResponse{
+//     results:Movie[]
+//     page:number,
+//     total_pages:number,
+//     total_results:number
+// }
